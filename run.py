@@ -1,1 +1,2 @@
-run.py 입니다.
+from app import app
+app.run(debug=True)
