@@ -9,7 +9,9 @@ app.config.from_object('config')
 
 db = SQLAlchemy(app)
 
-
+"""
+install secret key
+"""
 def install_secret_key(app, filename='secret_key'):
 	filename = os.path.join(app.instance_path, filename)
 	try:
@@ -25,6 +27,9 @@ def install_secret_key(app, filename='secret_key'):
 if not app.config['DEBUG']:
 	install_secret_key(app)
 
+"""
+error handler
+"""
 @app.errorhandler(404)
 def not_found(error):
 	return render_template('404.html'), 404
