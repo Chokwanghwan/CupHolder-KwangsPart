@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 import os
 import sys
 
@@ -35,4 +36,6 @@ def not_found(error):
 	return render_template('404.html'), 404
 
 from app.users.views import mod as usersModule
+from app.search.views import voiceSearch
 app.register_blueprint(usersModule)
+app.register_blueprint(voiceSearch)

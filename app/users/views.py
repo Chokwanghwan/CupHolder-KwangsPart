@@ -1,3 +1,4 @@
+#-*- coding: utf-8 -*-
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 from werkzeug import check_password_hash, generate_password_hash
 
@@ -56,7 +57,6 @@ def register():
 		flash('Thanks for registering')
 		return redirect(url_for('users.home'))
 	return render_template("users/register.html", form=form)
-
 
 
 
