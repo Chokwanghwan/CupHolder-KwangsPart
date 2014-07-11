@@ -64,20 +64,25 @@ var MYAPPLICATION = {
 		}
 	},
 
+	listener : {
+		endSearch : function(){
+			var searchCompleteButton = document.querySelector("#voiceButton");
+			searchCompleteButton.addEventListener("click", function(event){
+				event.preventDefault();
+				var url = "/search/resultSearch/?id=" + document.querySelector('#test').innerHTML;
+				MYAPPLICATION.ajax.run("GET", url, function (){
+					if(this.oXhr.readyState==4){
+						console.log('oXhr.responseText : '+this.oXhr.responseText);
+					}
+				});
+			}, false);
+		}
+	},
+
 	start : function(){
 		console.log('Application Start');
 		this.voiceRecognition.init();
-
-		var searchCompleteButton = document.querySelector("#voiceButton");
-		searchCompleteButton.addEventListener("click", function(event){
-			event.preventDefault();
-			var url = "/search/resultSearch/?id=" + document.querySelector('#test').innerHTML;
-			MYAPPLICATION.ajax.run("GET", url, function (){
-				if(this.oXhr.readyState==4){
-					console.log('oXhr.responseText : '+this.oXhr.responseText);
-				}
-			});
-		}, false);
+		this.listener.endSearch();
 	}
 }
 
