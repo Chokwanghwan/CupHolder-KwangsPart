@@ -66,7 +66,7 @@ var MYAPPLICATION = {
 
 	listener : {
 		endSearch : function(){
-			var searchCompleteButton = document.querySelector("#voiceButton");
+			var searchCompleteButton = document.querySelector("#searchCompleteButton");
 			searchCompleteButton.addEventListener("click", function(event){
 				event.preventDefault();
 				var url = "/search/resultSearch/?id=" + document.querySelector('#test').innerHTML;
@@ -75,8 +75,7 @@ var MYAPPLICATION = {
 						console.log('oXhr.responseText : '+this.oXhr.responseText);
 					}
 				});
-			}, false);
-		}
+			}, false)}
 	},
 
 	start : function(){
@@ -86,4 +85,19 @@ var MYAPPLICATION = {
 	}
 }
 
-MYAPPLICATION.start();
+startSearch = function(){
+	startSearchButton = document.querySelector("#startSearchButton");
+	startSearchButton.addEventListener("click", function(event){
+		event.preventDefault();
+		console.log('here is startSearch')
+		MYAPPLICATION.start();
+		});
+}
+
+startSearch();
+
+
+
+
+
+
