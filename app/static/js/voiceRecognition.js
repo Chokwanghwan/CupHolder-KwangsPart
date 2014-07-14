@@ -65,7 +65,7 @@ var MYAPPLICATION = {
 	},
 
 	listener : {
-		endSearch : function(){
+		resultSearch : function(){
 			var searchCompleteButton = document.querySelector("#searchCompleteButton");
 			searchCompleteButton.addEventListener("click", function(event){
 				event.preventDefault();
@@ -75,17 +75,28 @@ var MYAPPLICATION = {
 						console.log('oXhr.responseText : '+this.oXhr.responseText);
 					}
 				});
+			}, false)},
+
+		endSearch : function(){
+			var endSearchButton = document.querySelector("#endSearchButton");
+			endSearchButton.addEventListener("click", function(event) {
+				event.preventDefault();
+				console.log('Application 종료');
+				MYAPPLICATION.voiceRecognition.oRecognition.stop();
 			}, false)}
 	},
 
 	start : function(){
 		console.log('Application Start');
+		document.querySelector('#test').innerHTML = '';
+		document.querySelector('#test2').innerHTML = 'TEMP';
 		this.voiceRecognition.init();
+		this.listener.resultSearch();
 		this.listener.endSearch();
 	}
 }
 
-startSearch = function(){
+MainStart = function(){
 	startSearchButton = document.querySelector("#startSearchButton");
 	startSearchButton.addEventListener("click", function(event){
 		event.preventDefault();
@@ -94,10 +105,4 @@ startSearch = function(){
 		});
 }
 
-startSearch();
-
-
-
-
-
-
+MainStart();
