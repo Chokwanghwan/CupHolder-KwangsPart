@@ -68,7 +68,6 @@ var MYAPPLICATION = {
 		resultSearch : function(){
 			var searchCompleteButton = document.querySelector("#searchCompleteButton");
 			searchCompleteButton.addEventListener("click", function(event){
-				event.preventDefault();
 				var url = "/search/resultSearch/?id=" + document.querySelector('#test').innerHTML;
 				MYAPPLICATION.ajax.run("GET", url, function (){
 					if(this.oXhr.readyState==4){
@@ -88,8 +87,6 @@ var MYAPPLICATION = {
 
 	start : function(){
 		console.log('Application Start');
-		document.querySelector('#test').innerHTML = '';
-		document.querySelector('#test2').innerHTML = 'TEMP';
 		this.voiceRecognition.init();
 		this.listener.resultSearch();
 		this.listener.endSearch();
@@ -100,6 +97,9 @@ MainStart = function(){
 	startSearchButton = document.querySelector("#startSearchButton");
 	startSearchButton.addEventListener("click", function(event){
 		event.preventDefault();
+		document.querySelector('#test').innerHTML = '';
+		document.querySelector('#test2').innerHTML = 'TEMP';
+		MYAPPLICATION.voiceRecognition.final_transcript = '';
 		console.log('here is startSearch')
 		MYAPPLICATION.start();
 		});
