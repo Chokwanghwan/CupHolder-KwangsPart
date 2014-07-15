@@ -65,13 +65,41 @@ var MYAPPLICATION = {
 	},
 
 	listener : {
+		voiceRecognitionStart : function(){
+			startSearchButton = document.querySelector("#startSearchButton");
+			startSearchButton.addEventListener("click", function(event){
+				event.preventDefault();
+				document.querySelector('#test').innerHTML = '';
+				document.querySelector('#test2').innerHTML = 'TEMP';
+				MYAPPLICATION.voiceRecognition.final_transcript = '';
+				console.log('here is startSearch')
+				MYAPPLICATION.start();
+			}, false)},		
+
 		resultSearch : function(){
 			var searchCompleteButton = document.querySelector("#searchCompleteButton");
 			searchCompleteButton.addEventListener("click", function(event){
 				var url = "/search/resultSearch/?id=" + document.querySelector('#test').innerHTML;
 				MYAPPLICATION.ajax.run("GET", url, function (){
 					if(this.oXhr.readyState==4){
-						console.log('oXhr.responseText : '+this.oXhr.responseText);
+						var jsonData = eval("(" + this.oXhr.responseText + ")");						
+						var items = jsonData.rss.channel.item;
+						
+						for(var i=0; i<items.length ; i++){
+							// 변수 셋팅
+							var title = items[i].title;
+							var	description = items[i].description;
+							var link = items[i].link;
+							var contents = document.querySelector('#content');
+
+							var node = document.createElement("div");
+							var headerNode = document.createElement("h1");
+							var headerNodeText = document.createTextNode(title);
+
+							node.appendChild(headerNode);
+							headerNode.appendChild(headerNodeText);
+							contents.appendChild(node);
+						}
 					}
 				});
 			}, false)},
@@ -94,15 +122,7 @@ var MYAPPLICATION = {
 }
 
 MainStart = function(){
-	startSearchButton = document.querySelector("#startSearchButton");
-	startSearchButton.addEventListener("click", function(event){
-		event.preventDefault();
-		document.querySelector('#test').innerHTML = '';
-		document.querySelector('#test2').innerHTML = 'TEMP';
-		MYAPPLICATION.voiceRecognition.final_transcript = '';
-		console.log('here is startSearch')
-		MYAPPLICATION.start();
-		});
+	MYAPPLICATION.listener.voiceRecognitionStart();
 }
 
 MainStart();
