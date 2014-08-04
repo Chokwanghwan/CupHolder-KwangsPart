@@ -57,13 +57,3 @@ def register():
 		flash('Thanks for registering')
 		return redirect(url_for('users.home'))
 	return render_template("users/register.html", form=form)
-
-
-
-
-
-
-
-
-
-
