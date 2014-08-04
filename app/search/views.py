@@ -10,6 +10,7 @@ voiceSearch= Blueprint('voiceRecognition', __name__, url_prefix='/search')
  
 @voiceSearch.route("/resultSearch/", methods=['GET'])
 def dic():
+	voiceData = request.args.get('id');
 	if request.method == 'GET':
 		rssUrl = 'http://openapi.naver.com/search?key=51627fdc5735c05d3d74506315ad3422&query='+request.args.get('id')+'&display=5&start=1&target=kin&sort=sim'
 		rssUrl = rssUrl.replace(' ', '%20');
