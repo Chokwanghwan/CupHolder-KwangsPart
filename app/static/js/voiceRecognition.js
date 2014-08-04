@@ -1,35 +1,40 @@
 var MYAPPLICATION = {
-	voiceRecognition : {
+	coreRecognition : {
 		oRecognition : new webkitSpeechRecognition(),
-		final_transcript : '',
+		checkScriptList : '',
 
 		init:function(){
 			this.oRecognition.continuous = true;
 			this.oRecognition.interimResults = true;
 
-			console.log('final_transcript '+this.final_transcript);
 			this.oRecognition.onresult = this.onresult.bind(this);
 			this.oRecognition.onstart = this.onstart;
 			this.oRecognition.onerror = this.onerror;
-			this.oRecognition.onene = this.onend;
+			this.oRecognition.onend = this.onend;
 
 			this.oRecognition.lang = 'ko-KR';
 			this.oRecognition.start();
 		},
 
 		onresult:function(event){
-			var interim_transcript = '';
-		    
-			for (var i = event.resultIndex; i < event.results.length; ++i) {
-				if (event.results[i].isFinal) {
-					this.final_transcript += event.results[i][0].transcript;
-					console.log('final_transcript : '+this.final_transcript)
-				} else {
-					interim_transcript += event.results[i][0].transcript;
-					console.log('interim_transcript : '+interim_transcript)
+			var pattern = new RegExp('시작');
+			try{
+				for (var i = event.resultIndex; i < event.results.length; ++i) {
+					if (event.results[i].isFinal) {
+						this.checkScriptList += event.results[i][0].transcript;
+						console.log('coreRecognition checkScriptList : '+this.checkScriptList);	
+						if(pattern.exec(this.checkScriptList)) {
+							console.log('시작이 입력되었습니다.');
+							console.log('when input checkScriptList : '+this.checkScriptList);
+							this.oRecognition.stop();
+							this.checkScriptList = '';
+						}
+					}
 				}
-				document.querySelector('#test').innerHTML = this.final_transcript;
-				document.querySelector('#test2').innerHTML = interim_transcript;
+			}
+			catch (e) {
+				console.log('에러 발생!! 에러명 : '+e);
+				this.oRecognition.stop();
 			}
 		},
 
@@ -44,85 +49,91 @@ var MYAPPLICATION = {
 
 		onend:function(){
 			console.log('onend');
+			MYAPPLICATION.voiceRecognition.init();
 		},
 
 		searchResult : function (){
-			if(this.oXhr.readyState==4){			
+			if(this.oXhr.readyState==4){
 				console.log('oXhr.responseText : '+this.oXhr.responseText)
 			}
 		}
 	},
 
-	ajax : {
-		oXhr : '',
-		run : function(method, url, callback){
-			this.oXhr = new XMLHttpRequest();
-			
-			this.oXhr.onreadystatechange = callback.bind(this);
-			this.oXhr.open(method, url, true);
-			this.oXhr.send();
-		}
-	},
+	voiceRecognition : {
+		oRecognition : new webkitSpeechRecognition(),
+		final_transcript : '',
 
-	listener : {
-		voiceRecognitionStart : function(){
-			startSearchButton = document.querySelector("#startSearchButton");
-			startSearchButton.addEventListener("click", function(event){
-				event.preventDefault();
-				document.querySelector('#test').innerHTML = '';
-				document.querySelector('#test2').innerHTML = 'TEMP';
-				MYAPPLICATION.voiceRecognition.final_transcript = '';
-				console.log('here is startSearch')
-				MYAPPLICATION.start();
-			}, false)},		
+		init:function(){
+			this.oRecognition.continuous = true;
+			this.oRecognition.interimResults = true;
 
-		resultSearch : function(){
-			var searchCompleteButton = document.querySelector("#searchCompleteButton");
-			searchCompleteButton.addEventListener("click", function(event){
-				var url = "/search/resultSearch/?id=" + document.querySelector('#test').innerHTML;
-				MYAPPLICATION.ajax.run("GET", url, function (){
-					if(this.oXhr.readyState==4){
-						var jsonData = eval("(" + this.oXhr.responseText + ")");						
-						var items = jsonData.rss.channel.item;
-						
-						for(var i=0; i<items.length ; i++){
-							// 변수 셋팅
-							var title = items[i].title;
-							var	description = items[i].description;
-							var link = items[i].link;
-							var contents = document.querySelector('#content');
+			this.oRecognition.onresult = this.onresult.bind(this);
+			this.oRecognition.onstart = this.onstart;
+			this.oRecognition.onerror = this.onerror;
+			this.oRecognition.onend = this.onend;
 
-							var node = document.createElement("div");
-							var headerNode = document.createElement("h1");
-							var headerNodeText = document.createTextNode(title);
+			this.oRecognition.lang = 'ko-KR';
+			this.oRecognition.start();
+		},
 
-							node.appendChild(headerNode);
-							headerNode.appendChild(headerNodeText);
-							contents.appendChild(node);
-						}
+		onresult:function(event){
+			var interim_transcript = '';
+			var checkScriptList = '';
+			try{	
+				for (var i = event.resultIndex; i < event.results.length; ++i) {
+					if (event.results[i].isFinal) {
+						this.final_transcript += event.results[i][0].transcript;
+						checkScriptList += event.results[i][0].transcript;
+						console.log('final_transcript : '+this.final_transcript)
+						console.log('voiceRecognition checkScriptList : '+checkScriptList);
+						(function(){
+							var checkScript = ['결과', '끝'];
+							var pattern = new RegExp(checkScript);
+							console.log('함수는 실행된다!!!!!!!!!!!!!!!!!!!!!!');
+							console.log('checkScriptList : '+checkScriptList);
+							console.log('checkScript : '+checkScript);
+							for (var i = 0; i < checkScript.length; i++){
+								if (pattern.exec(checkScriptList) == checkScript[i]) {
+									if(checkScript == '결과') {
+										console.log('결과창 성공!!!');
+									}
+									else if(checkScript == '끝') {
+										console.log('끝 성공!!');
+										this.oRecognition.stop();
+									}
+									else{
+										console.log('고려되지 않은 결과!!');
+									}
+								}
+							}
+						}());
+					} else {
+						interim_transcript += event.results[i][0].transcript;
+						console.log('interim_transcriptList : '+interim_transcript)
 					}
-				});
-			}, false)},
+				}
+			}
 
-		endSearch : function(){
-			var endSearchButton = document.querySelector("#endSearchButton");
-			endSearchButton.addEventListener("click", function(event) {
-				event.preventDefault();
-				console.log('Application 종료');
-				MYAPPLICATION.voiceRecognition.oRecognition.stop();
-			}, false)}
-	},
+			catch (e) {
+				console.log('에러 발생!! 에러명 : '+e);
+				this.oRecognition.stop();
+			}
+		},
 
-	start : function(){
-		console.log('Application Start');
-		this.voiceRecognition.init();
-		this.listener.resultSearch();
-		this.listener.endSearch();
+		onstart:function(){
+			console.log('onstart');
+		},
+
+		onerror:function(event){
+			console.log('onerropythr');
+			console.log(event);
+		},
+
+		onend:function(){
+			console.log('onend');
+			MYAPPLICATION.coreRecognition.init();
+		}
 	}
 }
 
-MainStart = function(){
-	MYAPPLICATION.listener.voiceRecognitionStart();
-}
-
-MainStart();
+MYAPPLICATION.coreRecognition.init();
